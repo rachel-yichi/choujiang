@@ -8,6 +8,8 @@ function App() {
   const [finalName, setFinalName] = useState('');
   const [isSlowingDown, setIsSlowingDown] = useState(false);
   const [selectedNames, setSelectedNames] = useState([]);
+  const [isDuplicate, setIsDuplicate] = useState(false);
+  const [isRepicking, setIsRepicking] = useState(false);
   const intervalRef = useRef(null);
   const timeoutRef = useRef(null);
   const speedRef = useRef(50);
@@ -52,9 +54,28 @@ function App() {
         setIsSlowingDown(false);
         const final = getRandomName();
         setCurrentName(final);
-        setFinalName(final);
-        // 添加到已选中名单
-        setSelectedNames(prev => [...prev, { name: final, time: new Date().toLocaleTimeString() }]);
+        
+        // 检查是否重复
+        const isNameDuplicate = selectedNames.some(item => item.name === final);
+        if (isNameDuplicate) {
+          setIsDuplicate(true);
+          setFinalName('');
+          // 显示重新抽取提示，然后自动重新开始
+          setTimeout(() => {
+            setIsDuplicate(false);
+            setIsRepicking(true);
+            setCurrentName('重新抽取中...');
+            setTimeout(() => {
+              setIsRepicking(false);
+              startPicking();
+            }, 1000);
+          }, 1500);
+        } else {
+          setFinalName(final);
+          setIsDuplicate(false);
+          // 添加到已选中名单
+          setSelectedNames(prev => [...prev, { name: final, time: new Date().toLocaleTimeString() }]);
+        }
         return;
       }
       
@@ -90,8 +111,8 @@ function App() {
         </h1>
         
         <div className="name-display-container">
-          <div className={`name-display ${isRunning ? 'running' : ''} ${finalName ? 'final' : ''}`}>
-            {currentName}
+          <div className={`name-display ${isRunning ? 'running' : ''} ${finalName ? 'final' : ''} ${isDuplicate ? 'duplicate' : ''} ${isRepicking ? 'repicking' : ''}`}>
+            {isDuplicate ? '重复抽取！' : currentName}
           </div>
           
           {finalName && (
