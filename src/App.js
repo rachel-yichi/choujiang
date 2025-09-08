@@ -37,7 +37,7 @@ function App() {
     setIsSlowingDown(true);
     clearInterval(intervalRef.current);
     
-    const totalDuration = 3000; // 3秒总时长
+    const totalDuration = 1000; // 1秒总时长
     const startTime = Date.now();
     let currentSpeed = speedRef.current;
     
@@ -46,7 +46,7 @@ function App() {
       const progress = elapsed / totalDuration;
       
       if (progress >= 1) {
-        // 3秒到达，停止并显示最终结果
+        // 1秒到达，停止并显示最终结果
         setIsRunning(false);
         setIsSlowingDown(false);
         const final = getRandomName();
@@ -55,7 +55,7 @@ function App() {
         return;
       }
       
-      // 根据进度调整速度，使其在3秒内逐渐减慢
+      // 根据进度调整速度，使其在1秒内逐渐减慢
       currentSpeed = speedRef.current + (progress * 750); // 从初始速度逐渐增加到800ms
       setCurrentName(getRandomName());
       
