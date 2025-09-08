@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/choujiang/static/css/main.b74653a0.css",
-    "main.js": "/choujiang/static/js/main.b3e26f78.js",
+    "main.css": "/choujiang/static/css/main.24eea41d.css",
+    "main.js": "/choujiang/static/js/main.165f037b.js",
     "index.html": "/choujiang/index.html",
-    "main.b74653a0.css.map": "/choujiang/static/css/main.b74653a0.css.map",
-    "main.b3e26f78.js.map": "/choujiang/static/js/main.b3e26f78.js.map"
+    "main.24eea41d.css.map": "/choujiang/static/css/main.24eea41d.css.map",
+    "main.165f037b.js.map": "/choujiang/static/js/main.165f037b.js.map"
   },
   "entrypoints": [
-    "static/css/main.b74653a0.css",
-    "static/js/main.b3e26f78.js"
+    "static/css/main.24eea41d.css",
+    "static/js/main.165f037b.js"
   ]
 }

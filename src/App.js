@@ -74,7 +74,7 @@ function App() {
           setFinalName(final);
           setIsDuplicate(false);
           // 添加到已选中名单
-          setSelectedNames(prev => [...prev, { name: final, time: new Date().toLocaleTimeString() }]);
+          setSelectedNames(prev => [...prev, { name: final, time: new Date().toLocaleTimeString(), isAbsent: false }]);
         }
         return;
       }
@@ -91,6 +91,18 @@ function App() {
 
   const clearHistory = () => {
     setSelectedNames([]);
+  };
+
+  const markAsAbsent = () => {
+    if (!finalName) return;
+    
+    setSelectedNames(prev => 
+      prev.map(item => 
+        item.name === finalName 
+          ? { ...item, isAbsent: !item.isAbsent }
+          : item
+      )
+    );
   };
 
   const exportResults = () => {
@@ -111,22 +123,20 @@ function App() {
     
     const filename = `${formatTime}_心智探秘.txt`;
     
+    const presentCount = selectedNames.filter(item => !item.isAbsent).length;
+    const absentCount = selectedNames.filter(item => item.isAbsent).length;
+    
     let content = `心智探秘 - 随机点名结果\n`;
     content += `导出时间: ${currentTime.toLocaleString('zh-CN')}\n`;
     content += `班级总人数: ${studentNames.length} 人\n`;
-    content += `已选中人数: ${selectedNames.length} 人\n`;
+    content += `已抽中人数: ${selectedNames.length} 人\n`;
+    content += `出席人数: ${presentCount} 人\n`;
+    content += `缺勤人数: ${absentCount} 人\n`;
     content += `\n=== 抽签结果 ===\n`;
     
     selectedNames.forEach((item, index) => {
-      content += `${index + 1}. ${item.name} (抽中时间: ${item.time})\n`;
-    });
-    
-    content += `\n=== 未选中学生名单 ===\n`;
-    const unselectedNames = studentNames.filter(name => 
-      !selectedNames.some(selected => selected.name === name)
-    );
-    unselectedNames.forEach((name, index) => {
-      content += `${index + 1}. ${name}\n`;
+      const status = item.isAbsent ? ' [未到]' : ' [已到]';
+      content += `${index + 1}. ${item.name}${status} (抽中时间: ${item.time})\n`;
     });
     
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -200,6 +210,14 @@ function App() {
               🎉 恭喜 <strong>{finalName}</strong> 同学被选中！
             </p>
           )}
+          {finalName && (
+            <button 
+              className={`absent-btn ${selectedNames.find(item => item.name === finalName)?.isAbsent ? 'marked' : ''}`}
+              onClick={markAsAbsent}
+            >
+              {selectedNames.find(item => item.name === finalName)?.isAbsent ? '✅ 已标记未到' : '❌ 标记未到'}
+            </button>
+          )}
           {selectedNames.length > 0 && (
             <button 
               className="export-btn"
@@ -227,9 +245,12 @@ function App() {
             <p className="empty-message">暂无选中记录</p>
           ) : (
             selectedNames.map((item, index) => (
-              <div key={index} className="history-item">
+              <div key={index} className={`history-item ${item.isAbsent ? 'absent' : ''}`}>
                 <span className="history-number">{selectedNames.length - index}</span>
-                <span className="history-name">{item.name}</span>
+                <span className="history-name">
+                  {item.name}
+                  {item.isAbsent && <span className="absent-tag">未到</span>}
+                </span>
                 <span className="history-time">{item.time}</span>
               </div>
             )).reverse()
