@@ -37,12 +37,16 @@ function App() {
     setIsSlowingDown(true);
     clearInterval(intervalRef.current);
     
+    const totalDuration = 3000; // 3秒总时长
+    const startTime = Date.now();
     let currentSpeed = speedRef.current;
+    
     const slowDownStep = () => {
-      setCurrentName(getRandomName());
-      currentSpeed += 30;
+      const elapsed = Date.now() - startTime;
+      const progress = elapsed / totalDuration;
       
-      if (currentSpeed > 800) {
+      if (progress >= 1) {
+        // 3秒到达，停止并显示最终结果
         setIsRunning(false);
         setIsSlowingDown(false);
         const final = getRandomName();
@@ -50,6 +54,10 @@ function App() {
         setFinalName(final);
         return;
       }
+      
+      // 根据进度调整速度，使其在3秒内逐渐减慢
+      currentSpeed = speedRef.current + (progress * 750); // 从初始速度逐渐增加到800ms
+      setCurrentName(getRandomName());
       
       timeoutRef.current = setTimeout(slowDownStep, currentSpeed);
     };
