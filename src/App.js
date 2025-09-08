@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { studentNames } from './studentNames';
-import emailjs from '@emailjs/browser';
 import './App.css';
 
 function App() {
@@ -11,8 +10,6 @@ function App() {
   const [selectedNames, setSelectedNames] = useState([]);
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [isRepicking, setIsRepicking] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
-  const [isSendingEmail, setIsSendingEmail] = useState(false);
   const intervalRef = useRef(null);
   const timeoutRef = useRef(null);
   const speedRef = useRef(50);
@@ -28,8 +25,6 @@ function App() {
     setIsRunning(true);
     setIsSlowingDown(false);
     setFinalName('');
-    setEmailSent(false);
-    setIsSendingEmail(false);
     speedRef.current = 50;
     
     const updateName = () => {
@@ -80,8 +75,6 @@ function App() {
           setIsDuplicate(false);
           // 添加到已选中名单
           setSelectedNames(prev => [...prev, { name: final, time: new Date().toLocaleTimeString() }]);
-          // 发送邮件通知
-          sendEmailResult(final);
         }
         return;
       }
@@ -100,33 +93,51 @@ function App() {
     setSelectedNames([]);
   };
 
-  const sendEmailResult = async (selectedName) => {
-    setIsSendingEmail(true);
-    
-    // EmailJS配置 - 这些是公开的服务配置，不是敏感信息
-    const serviceID = 'service_choujiang';
-    const templateID = 'template_result';
-    const publicKey = 'your_public_key_here';
-    
-    const templateParams = {
-      to_email: 'yichi-zh25@mails.tsinghua.edu.cn',
-      selected_name: selectedName,
-      selection_time: new Date().toLocaleString('zh-CN'),
-      total_students: studentNames.length,
-      selected_count: selectedNames.length + 1,
-      from_name: '随机点名系统'
-    };
-
-    try {
-      await emailjs.send(serviceID, templateID, templateParams, publicKey);
-      setEmailSent(true);
-      console.log('邮件发送成功');
-    } catch (error) {
-      console.error('邮件发送失败:', error);
-      // 即使失败也不影响主要功能
-    } finally {
-      setIsSendingEmail(false);
+  const exportResults = () => {
+    if (selectedNames.length === 0) {
+      alert('暂无抽签结果可导出');
+      return;
     }
+
+    const currentTime = new Date();
+    const formatTime = currentTime.toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    }).replace(/[/:]/g, '').replace(/\s/g, '_');
+    
+    const filename = `${formatTime}_心智探秘.txt`;
+    
+    let content = `心智探秘 - 随机点名结果\n`;
+    content += `导出时间: ${currentTime.toLocaleString('zh-CN')}\n`;
+    content += `班级总人数: ${studentNames.length} 人\n`;
+    content += `已选中人数: ${selectedNames.length} 人\n`;
+    content += `\n=== 抽签结果 ===\n`;
+    
+    selectedNames.forEach((item, index) => {
+      content += `${index + 1}. ${item.name} (抽中时间: ${item.time})\n`;
+    });
+    
+    content += `\n=== 未选中学生名单 ===\n`;
+    const unselectedNames = studentNames.filter(name => 
+      !selectedNames.some(selected => selected.name === name)
+    );
+    unselectedNames.forEach((name, index) => {
+      content += `${index + 1}. ${name}\n`;
+    });
+    
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   useEffect(() => {
@@ -185,21 +196,17 @@ function App() {
         <div className="info">
           <p>班级总人数: {studentNames.length} 人</p>
           {finalName && (
-            <div>
-              <p className="result">
-                🎉 恭喜 <strong>{finalName}</strong> 同学被选中！
-              </p>
-              {isSendingEmail && (
-                <p className="email-status sending">
-                  📧 正在发送邮件通知...
-                </p>
-              )}
-              {emailSent && !isSendingEmail && (
-                <p className="email-status sent">
-                  ✅ 结果已发送到 yichi-zh25@mails.tsinghua.edu.cn
-                </p>
-              )}
-            </div>
+            <p className="result">
+              🎉 恭喜 <strong>{finalName}</strong> 同学被选中！
+            </p>
+          )}
+          {selectedNames.length > 0 && (
+            <button 
+              className="export-btn"
+              onClick={exportResults}
+            >
+              📁 导出结果 ({selectedNames.length}人)
+            </button>
           )}
         </div>
       </div>

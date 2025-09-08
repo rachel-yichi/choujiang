@@ -251,26 +251,28 @@
   animation: resultAppear 0.8s ease-out;
 }
 
-.email-status {
-  font-size: 1rem !important;
-  margin-top: 0.5rem !important;
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-  animation: emailStatusAppear 0.5s ease-out;
+.export-btn {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
+  animation: exportBtnAppear 0.5s ease-out;
 }
 
-.email-status.sending {
-  background: rgba(255, 193, 7, 0.2);
-  color: #ffc107;
-  border: 1px solid rgba(255, 193, 7, 0.3);
-  animation: sendingPulse 1.5s ease-in-out infinite;
+.export-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
 }
 
-.email-status.sent {
-  background: rgba(40, 167, 69, 0.2);
-  color: #28a745;
-  border: 1px solid rgba(40, 167, 69, 0.3);
+.export-btn:active {
+  transform: translateY(0);
 }
 
 @keyframes resultAppear {
@@ -511,22 +513,13 @@
   }
 }
 
-@keyframes emailStatusAppear {
+@keyframes exportBtnAppear {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(15px) scale(0.9);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes sendingPulse {
-  0%, 100% { 
-    opacity: 1;
-  }
-  50% { 
-    opacity: 0.6;
+    transform: translateY(0) scale(1);
   }
 }
