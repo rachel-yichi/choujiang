@@ -9,7 +9,10 @@
       "Bash(git push:*)",
       "Bash(npm run deploy:*)",
       "Bash(ping:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx gh-pages:*)",
+      "WebFetch(domain:rachel-yichi.github.io)"
     ],
     "deny": [],
     "ask": []

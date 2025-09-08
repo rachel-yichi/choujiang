@@ -7,6 +7,7 @@ function App() {
   const [currentName, setCurrentName] = useState('点击开始抽签');
   const [finalName, setFinalName] = useState('');
   const [isSlowingDown, setIsSlowingDown] = useState(false);
+  const [selectedNames, setSelectedNames] = useState([]);
   const intervalRef = useRef(null);
   const timeoutRef = useRef(null);
   const speedRef = useRef(50);
@@ -52,6 +53,8 @@ function App() {
         const final = getRandomName();
         setCurrentName(final);
         setFinalName(final);
+        // 添加到已选中名单
+        setSelectedNames(prev => [...prev, { name: final, time: new Date().toLocaleTimeString() }]);
         return;
       }
       
@@ -65,6 +68,10 @@ function App() {
     slowDownStep();
   };
 
+  const clearHistory = () => {
+    setSelectedNames([]);
+  };
+
   useEffect(() => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -74,7 +81,8 @@ function App() {
 
   return (
     <div className="app">
-      <div className="container">
+      <div className="main-content">
+        <div className="container">
         <h1 className="title">
           <span className="title-icon">🎯</span>
           随机点名系统
@@ -125,6 +133,33 @@ function App() {
             </p>
           )}
         </div>
+      </div>
+      
+      <div className="history-panel">
+        <div className="history-header">
+          <h3>已选中名单</h3>
+          <button 
+            className="clear-btn" 
+            onClick={clearHistory}
+            disabled={selectedNames.length === 0}
+          >
+            清空
+          </button>
+        </div>
+        <div className="history-list">
+          {selectedNames.length === 0 ? (
+            <p className="empty-message">暂无选中记录</p>
+          ) : (
+            selectedNames.map((item, index) => (
+              <div key={index} className="history-item">
+                <span className="history-number">{selectedNames.length - index}</span>
+                <span className="history-name">{item.name}</span>
+                <span className="history-time">{item.time}</span>
+              </div>
+            )).reverse()
+          )}
+        </div>
+      </div>
       </div>
       
       <div className="background-animation">
