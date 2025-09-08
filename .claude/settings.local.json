@@ -13,7 +13,8 @@
       "Bash(npm run build:*)",
       "Bash(npx gh-pages:*)",
       "WebFetch(domain:rachel-yichi.github.io)",
-      "Bash(timeout 60 npx gh-pages -d build)"
+      "Bash(timeout 60 npx gh-pages -d build)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []
