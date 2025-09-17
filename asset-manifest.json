@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/choujiang/static/css/main.0b838006.css",
-    "main.js": "/choujiang/static/js/main.9596640d.js",
+    "main.js": "/choujiang/static/js/main.8b141eb5.js",
     "index.html": "/choujiang/index.html",
     "main.0b838006.css.map": "/choujiang/static/css/main.0b838006.css.map",
-    "main.9596640d.js.map": "/choujiang/static/js/main.9596640d.js.map"
+    "main.8b141eb5.js.map": "/choujiang/static/js/main.8b141eb5.js.map"
   },
   "entrypoints": [
     "static/css/main.0b838006.css",
-    "static/js/main.9596640d.js"
+    "static/js/main.8b141eb5.js"
   ]
 }
